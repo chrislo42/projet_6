@@ -1,0 +1,164 @@
+body, html{
+  height: 100%;
+}
+
+/*BOF header.php*/
+
+.page-header {
+  background-color: #f57900;
+  margin-top: -20px;
+  height: 100px;
+  padding-bottom: 0;
+}
+
+.page-header img{
+  float: left;
+  height: 100%;
+}
+
+.page-header h1{
+  position: relative;
+  top: 60px;
+  left: 60px;
+}
+
+.top-menu, .top-menu:hover, .top-menu:visited {
+  float: right;
+  font-size: 26pt;
+  margin-right: 20px;
+}
+
+[class*="color"]{
+  padding: 5px;
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+.color1 {
+  background-color: #C6C8F0;
+}
+
+.color2 {
+  background-color: #E7E7EA;
+}
+
+.color3 {
+  background-color: #f5c5f4;
+}
+.main{
+  padding-left: 5px;
+}
+
+.white_content {
+  display: none;
+}
+
+.white_content_comment {
+  display: none;
+  position: fixed;
+  top:100px;
+  left: 25%;
+  heigth: 100%;
+  width: 50%;
+  margin: auto;
+  padding: 10px;
+  border: 5px solid dimgrey;
+  border-radius: 10px;
+  background-color: white;
+  z-index: 1002;
+  overflow: auto;
+  box-shadow: 0px 0px 15px #000;
+  animation-duration: 1s;
+  animation-name: slidein;
+  animation-iteration-count: 1;
+}
+@keyframes slidein {
+  from {
+    top: -300px;
+  }
+
+  to {
+    top: 100px;
+  }
+}
+
+[id*=dark]{
+  overflow: hidden;
+  animation-duration: 0.2s;
+  animation-name: slidedown;
+  animation-iteration-count: 1;
+}
+@keyframes slidedown {
+  from {
+    height: 0px;
+  }
+
+  to {
+    height: 60px;
+  }
+}
+
+a, a:visited, a:hover{
+  text-decoration: none;
+  color: inherit;
+}
+
+.right{
+  float: right;
+  position: relative;
+  top: 5px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.btn-xs{
+  margin-top: 5px;
+}
+
+.black_overlay {
+  display: none;
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  z-index: 1001;
+  -moz-opacity: 0.8;
+  opacity: .50;
+  filter: alpha(opacity=50);
+}
+#main_body{
+  min-height:100%;
+  margin:0 auto;
+  position:relative;
+  padding-bottom: 30px;
+}
+
+footer{
+  background:#525252;
+  position:absolute;
+  bottom:0;
+  width:100%;
+  padding-top:6px;
+  height:30px;
+  display: flex;
+  justify-content: center;
+}
+.entree{
+  border: 1px solid grey;
+  border-radius: 3px;
+  background-color: #f1f1f1;
+  height: 30px;
+}
+
+@media screen AND (max-width: 800px){
+  .top-menu, .page-header h1 {
+    font-size: 22px;
+  }
+}
+@media screen AND (max-width: 550px){
+  .top-menu, .page-header h1 {
+    font-size: 18px;
+  }
+}
