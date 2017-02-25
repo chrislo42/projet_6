@@ -18,11 +18,6 @@ class Commentaire
         $this->_from_card = $from_card;
     }
 
-    public function getTitre()
-    {
-        return $this->_titre;
-    }
-
     public function getContenu()
     {
         return $this->_contenu;

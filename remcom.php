@@ -7,8 +7,7 @@
  */
 
 if (isset( $_GET['comid'] )) {
-    $req = $bdd->prepare('DELETE FROM commentaires WHERE id_comment=?');
-    $req->execute(array($_GET['comid'],));
+    $manage->removeComment($_GET['comid']);
 }
 
 header("Location: main.php?page=tableau.php");

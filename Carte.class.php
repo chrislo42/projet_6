@@ -26,18 +26,4 @@ class Carte {
     {
         return $this->_id_carte;
     }
-
-    public function getComment($bdd)
-    {
-        $req = $bdd->prepare('SELECT id_comment, contenu FROM commentaires WHERE from_card = ?');
-        $req->execute(array($this->_id_carte,));
-        $listes = array();
-        while ($donnees = $req->fetch()) {
-            $listes[] = new Commentaire($donnees[0], $donnees[1], $this->_id_carte);
-        }
-        $req->closeCursor(); // Termine le traitement de la requête
-        return $listes;
-
-    }
-
 }

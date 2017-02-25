@@ -9,29 +9,29 @@ $user = $_SESSION['user'];
 
 // Nouvelle liste
 if (isset($_POST['titre'])){
-    $user->addList($_POST['titre'], $bdd);
+    $titre = htmlspecialchars($_POST['titre']);
+    $manage->addList($titre, $user->getId());
 }
 
 // Nouvelle carte
 if (isset($_POST['carte'])){
-    $req = $bdd->prepare('INSERT INTO cartes (contenu, from_list) VALUES (?,?)');
-    $req->execute(array($_POST['contenu'], $_POST['lid'],));
+    $contenu = htmlspecialchars($_POST['contenu']);
+    $manage->addCard($contenu, $_POST['lid']);
 }
 
 // Nouveau commentaire
 if (isset($_POST['commentaire'])){
-    $req = $bdd->prepare('INSERT INTO commentaires (contenu, from_card) VALUES (?,?)');
-    $req->execute(array($_POST['contenu'], $_POST['cid'],));
+    $contenu = htmlspecialchars($_POST['contenu']);
+    $manage->addComment($contenu, $_POST['cid']);
 }
 
 // Deplacement de carte
 if (isset($_POST['deplacer'])){
-    $req = $bdd->prepare('UPDATE cartes SET from_list = ? WHERE id_carte = ?');
-    $req->execute(array($_POST['choix'], $_POST['cid'],));
+    $manage->moveCard($_POST['choix'], $_POST['cid']);
 }
 
 // chargement des listes du user
-$listes = $user->getList($bdd);
+$listes = $manage->getList($user->getId());
 
 echo ("<div class=\"row\">");
     foreach ($listes as $index => $liste){ ?>
@@ -42,7 +42,7 @@ echo ("<div class=\"row\">");
             <h2><?php echo $liste->getTitre(); ?></h2>
             <?php
             // chargement des cartes de la liste
-            $cartes = $liste->getCard($bdd);
+            $cartes = $manage->getCard($liste->getId());
             foreach ($cartes as $carte){
                 ?>
                 <!-- affichage des cartes -->
@@ -70,7 +70,7 @@ echo ("<div class=\"row\">");
                         <a href="javascript:void(0)" onclick="document.getElementById('light_com<?php echo $carte->getId(); ?>').style.display='block';document.getElementById('fade').style.display='block'"><p><?php echo $carte->getContenu(); ?></p>
                         <?php
                         //chargement des commentaires de la carte
-                        $commentaires = $carte->getComment($bdd);
+                        $commentaires = $manage->getComment($carte->getId());
                         if (count($commentaires)) {
                             // affichage du logo commentaire avec le nombre de commentaires, déclanche la mise à jour des commentaires
                             echo("<button class=\"btn btn-primary btn-xs\"><span class=\"glyphicon glyphicon-comment\"></span> " . count($commentaires) . " commentaire(s)</button>");

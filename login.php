@@ -6,19 +6,32 @@
  * Time: 10:53
  */
 
+$pseudo = "";
+$passwd = "";
+$erreur = "";
+$code = "0";
+
 if (isset($_POST['pseudo'])){
-    $pseudo = $_POST['pseudo'];
-    $passwd = $_POST['passwd'];
-    $user = new User($pseudo, $passwd, $bdd);
-    if ($user->getNom()) {
-        $_SESSION['page'] = "tableau.php";
-        $_SESSION ['user'] = $user;
-        header("Location: main.php?page=tableau.php");
+    $pseudo = htmlspecialchars($_POST['pseudo']);
+    $passwd = htmlspecialchars($_POST['passwd']);
+    $donnees = $manage->getUser($pseudo);
+    if ($donnees) {
+        if ($donnees['passwd'] == $passwd) {
+            $user = new User($pseudo, $passwd, $donnees['id'], $donnees['nom'], $donnees['prenom'], $donnees['mail']);
+            $_SESSION['page'] = "tableau.php";
+            $_SESSION ['user'] = $user;
+            header("Location: main.php?page=tableau.php");
+        }
+        else {
+            $erreur = "Le mot de passe n'est pas correct !";
+            $code = "3";
+        }
     }
-}
-else{
-    $pseudo = "";
-    $passwd = "";
+    else {
+        $erreur = "Le pseudo n'est pas correct !";
+        $code = "1";
+
+    }
 }
 
 ?>
@@ -26,9 +39,9 @@ else{
     <div class="col-xs-2 col-xs-offset-1">
         <form method="post" action="main.php" name="login">
             <p>
-                <label for="val1"> Pseudo : </label><input class="entree" name="pseudo" id="val1" type="text" value="<?php echo $pseudo;?>" required/><br />
+                <label for="val1"> Pseudo : </label><input class="entree" onclick="$('#val1').css({background:'#f1f1f1'});" name="pseudo" id="val1" type="text" value="<?php echo $pseudo;?>" required/><br />
                 <br />
-                <label for="val3"> Mot de passe : </label><input class="entree" name="passwd" id="val3" type="password" value="<?php echo $passwd;?>" required/><br />
+                <label for="val3"> Mot de passe : </label><input class="entree" onclick="$('#val3').css({background:'#f1f1f1'});" name="passwd" id="val3" type="password" value="<?php echo $passwd;?>" required/><br />
                 <br />
             </p>
             <p>
@@ -41,10 +54,16 @@ else{
     <div class="col-xs-4 col-xs-offset-1">
         <?php
             if (isset($_POST['pseudo'])){
-                if (isset($_SESSION['user'])){
+                if ($erreur == ""){
                     echo "Connexion réussie";
                 }else{
-                    echo "Pas de connexion : vérifier des données fournies";
+                    echo "Pas de connexion : vérifier des données fournies !<br />";
+                    echo $erreur;
+                    ?>
+                    <script type="text/javascript">
+                        $('#val<?php echo $code;?>').css({background:'red'});
+                    </script>
+                    <?php
                 }
             }
         ?>

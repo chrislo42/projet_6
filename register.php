@@ -5,28 +5,40 @@
  * Date: 16/02/17
  * Time: 09:08
  */
+$erreur = "";
+$code = "0";
+$pseudo = "";
+$nom = "";
+$prenom = "";
+$mail = "";
+$passwd = "";
+
 
 if (isset($_POST['pseudo'])){
-    $pseudo = $_POST['pseudo'];
-    $nom = $_POST['nom'];
-    $prenom = $_POST['prenom'];
-    $mail = $_POST['mail'];
-    $passwd = $_POST['passwd'];
-    if ($_POST['passwd'] == $_POST['conf_passwd']){
-        $user = new User($pseudo, $passwd, $bdd, $nom, $prenom, $mail);
-        if ($user->getNom()) {
+    $pseudo = htmlspecialchars($_POST['pseudo']);
+    $nom = htmlspecialchars($_POST['nom']);
+    $prenom = htmlspecialchars($_POST['prenom']);
+    $mail = htmlspecialchars($_POST['mail']);
+    $passwd = htmlspecialchars($_POST['passwd']);
+    if ($passwd == $_POST['conf_passwd']){
+        $donnees = $manage->getUser($pseudo);
+        if ($donnees) {
+            $erreur = "Le pseudo existe déjà !";
+            $code = "1";
+        }
+        else {
+            $manage->createUser($pseudo, $nom, $prenom, $mail, $passwd);
+            $donnees = $manage->getUser($pseudo);
+            $user = new User($pseudo, $passwd, $donnees['id'], $nom, $prenom, $mail);
             $_SESSION['page'] = "tableau.php";
             $_SESSION ['user'] = $user;
             header("Location: main.php?page=tableau.php");
         }
     }
-}
-else{
-    $pseudo = "";
-    $nom = "";
-    $prenom = "";
-    $mail = "";
-    $passwd = "";
+    else {
+        $erreur = "Les deux mots de passe ne sont pas égaux !";
+        $code = "6";
+    }
 }
 
 ?>
@@ -34,7 +46,7 @@ else{
     <form method="post" action="main.php" name="register">
         <div class="col-xs-2 col-xs-offset-1">
             <p>
-                <label for="val1"> Pseudo :</label><input class="entree" name="pseudo" id="val1" type="text" value="<?php echo $pseudo;?>" required/><br />
+                <label for="val1"> Pseudo :</label><input class="entree" name="pseudo" id="val1" type="text" onclick="$('#val1').css({background:'#f1f1f1'});" value="<?php echo $pseudo;?>" required/><br />
                 <br />
                 <label for="val2"> Nom :</label><input class="entree" name="nom" id="val2" type="text" value="<?php echo $nom;?>" required/><br />
                 <br />
@@ -62,13 +74,14 @@ else{
     <div class="col-xs-4 col-xs-offset-1">
         <?php
         if (isset($_POST['pseudo'])){
-            if (isset($_SESSION['user'])){
+            if ($erreur == ""){
                 echo "Inscription réussie";
             }else{
-                echo "Inscription abandonnée : vérifier des données fournies";
+                echo "Inscription abandonnée : vérifier des données fournies<br />";
+                echo $erreur;
                 ?>
                 <script type="text/javascript">
-                    $('#val6').css({background:'red'});
+                    $('#val<?php echo $code;?>').css({background:'red'});
                 </script>
 
                 <?php

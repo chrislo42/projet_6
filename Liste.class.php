@@ -27,17 +27,4 @@ class Liste
     {
         return $this->_list_id;
     }
-
-    public function getCard($bdd)
-    {
-        $req = $bdd->prepare('SELECT id_carte, contenu FROM cartes WHERE from_list = ?');
-        $req->execute(array($this->_list_id,));
-        $listes = array();
-        while ($donnees = $req->fetch()) {
-            $listes[] = new Carte($donnees[0], $donnees[1], $this->_user_id);
-        }
-        $req->closeCursor(); // Termine le traitement de la requête
-        return $listes;
-
-    }
 }

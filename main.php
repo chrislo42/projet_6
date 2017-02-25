@@ -10,16 +10,7 @@ function __autoload($class_name) {
 }
 session_start();
 
-
-try
-{
-    $bdd = new PDO('mysql:host=localhost;dbname=trello;charset=utf8', 'trellapp', 'access', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-}
-catch (Exception $e)
-{
-    die('Erreur : ' . $e->getMessage());
-}
-
+$manage = new Manager();
 
 if (!isset($_SESSION['page'])) { $_SESSION['page'] = "login.php"; }
 if (isset( $_GET['page'] )) { $_SESSION['page'] = $_GET['page']; }
