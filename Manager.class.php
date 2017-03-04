@@ -36,19 +36,58 @@ class Manager{
         $req->closeCursor(); // Termine le traitement de la requête
     }
 
-    public function addList($titre ,$user_id)
+    public function addTable($titre ,$user_id)
     {
-        $req = $this->_bdd->prepare('INSERT INTO listes (titre, id_user) VALUES (?,?)');
+        $req = $this->_bdd->prepare('INSERT INTO tableaux (titre, id_user) VALUES (?,?)');
         return $req->execute(array($titre, $user_id,));
     }
 
-    public function getList($user_id)
+    public function getTable($user_id)
     {
-        $req = $this->_bdd->prepare('SELECT titre, id_list FROM listes WHERE id_user = ?');
+        $req = $this->_bdd->prepare('SELECT titre, id_table FROM tableaux WHERE id_user = ?');
         $req->execute(array($user_id,));
         $listes = array();
         while ($donnees = $req->fetch()) {
-            $listes[] = new Liste($donnees[0], $donnees[1], $user_id);
+            $listes[] = new Tableau($donnees[0], $donnees[1], $user_id);
+        }
+        $req->closeCursor(); // Termine le traitement de la requête
+        return $listes;
+    }
+
+    public function getTableTitle($table_id)
+    {
+        $req = $this->_bdd->prepare('SELECT titre FROM tableaux WHERE id_table = ?');
+        $req->execute(array($table_id,));
+        $donnees = $req->fetch();
+        $req->closeCursor(); // Termine le traitement de la requête
+        return $donnees[0];
+    }
+
+    public function removeTable($table_id)
+    {
+        $req = $this->_bdd->prepare('DELETE FROM commentaires WHERE from_card IN (SELECT id_carte FROM cartes WHERE from_list IN (SELECT id_list FROM listes WHERE from_table=?))');
+        $req->execute(array($table_id,));
+        $req = $this->_bdd->prepare('DELETE FROM cartes WHERE from_list IN (SELECT id_list FROM listes WHERE from_table=?)');
+        $req->execute(array($table_id,));
+        $req = $this->_bdd->prepare('DELETE FROM listes WHERE from_table=?');
+        $req->execute(array($table_id,));
+        $req = $this->_bdd->prepare('DELETE FROM tableaux WHERE id_table=?');
+        $req->execute(array($table_id,));
+    }
+
+    public function addList($titre ,$table_id)
+    {
+        $req = $this->_bdd->prepare('INSERT INTO listes (titre, from_table) VALUES (?,?)');
+        return $req->execute(array($titre, $table_id,));
+    }
+
+    public function getList($table_id)
+    {
+        $req = $this->_bdd->prepare('SELECT titre, id_list FROM listes WHERE from_table = ?');
+        $req->execute(array($table_id,));
+        $listes = array();
+        while ($donnees = $req->fetch()) {
+            $listes[] = new Liste($donnees[0], $donnees[1], $table_id);
         }
         $req->closeCursor(); // Termine le traitement de la requête
         return $listes;
@@ -56,11 +95,11 @@ class Manager{
 
     public function removeList($list_id)
     {
-        $req = $this->_bdd->prepare('DELETE FROM listes WHERE id_list=?');
-        $req->execute(array($list_id,));
         $req = $this->_bdd->prepare('DELETE FROM commentaires WHERE from_card IN (SELECT id_carte FROM cartes WHERE from_list=?)');
         $req->execute(array($list_id,));
         $req = $this->_bdd->prepare('DELETE FROM cartes WHERE from_list=?');
+        $req->execute(array($list_id,));
+        $req = $this->_bdd->prepare('DELETE FROM listes WHERE id_list=?');
         $req->execute(array($list_id,));
 
     }

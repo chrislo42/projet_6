@@ -20,7 +20,7 @@ if (isset($_POST['pseudo'])){
             $user = new User($pseudo, $passwd, $donnees['id'], $donnees['nom'], $donnees['prenom'], $donnees['mail']);
             $_SESSION['page'] = "tableau.php";
             $_SESSION ['user'] = $user;
-            header("Location: main.php?page=tableau.php");
+            header("Location: main.php?page=accueil.php");
         }
         else {
             $erreur = "Le mot de passe n'est pas correct !";

@@ -32,6 +32,7 @@ $titre_page = substr ( $_SESSION['page'], 0, strpos ( $_SESSION['page'], "." ) )
         <div id="main_body">
         <div id="fade" class="black_overlay"></div>
         <div class="page-header">
+            <img src="images/DTA.jpg" alt="Logo DTA small"/>
             <?php
                 if (isset($_SESSION['user'])) {
                     $user = $_SESSION['user'];
@@ -41,10 +42,28 @@ $titre_page = substr ( $_SESSION['page'], 0, strpos ( $_SESSION['page'], "." ) )
                         <small>Hello <?php echo($user->bonjour()); ?> -</small>
                     </p>
                     <?php
+                    if ($_SESSION['page'] == "tableau.php") {
+                        echo ("<a class=\"special\" href=\"main.php?page=accueil.php\">Tableaux</a>");
+                    }
                 }
             ?>
-            <img src="images/DTA.jpg" alt="Logo DTA small"/>
-            <h1>Treloo by DTA - <?php echo ($titre_page);?></h1>
+            <h1>Treloo by DTA - <small><?php
+                    if ($titre_page == "tableau") {
+                        if (isset($_GET['tableid']) AND $_GET['tableid'] != ""){
+                            echo ($manage->getTableTitle($_GET['tableid']));
+                        }
+                        else {
+                            if ($_SESSION['tableid'] != ""){
+                                echo ($manage->getTableTitle($_SESSION['tableid']));
+                            }
+                            else {
+                                echo ("erreur");
+                            }
+                        }
+                    }
+                    else{
+                        echo ($titre_page);
+                    }?></small></h1>
         </div>
         <div class="main">
             <div class="container-fluid">
